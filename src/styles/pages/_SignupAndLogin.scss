@@ -1,0 +1,42 @@
+#signup-page,
+#login-page {
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 0.5rem;
+  box-shadow: 0.6rem 0.6rem 1rem rgb(177, 177, 177);
+  color: white;
+  width: 28rem;
+  height: 32rem;
+  margin: 2rem auto;
+  padding-top: 5rem;
+
+  a {
+    color: lightblue;
+  }
+
+  form {
+    margin: 1rem;
+
+    label {
+      text-align: left;
+    }
+    input {
+      width: 15rem;
+    }
+    button {
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+#signup-page {
+  label {
+    width: 10rem;
+  }
+}
+
+#login-page {
+  label {
+    width: 6rem;
+  }
+}

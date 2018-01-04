@@ -1,0 +1,34 @@
+@import 'bootstrap-reboot';
+
+@import 'pages/SignupAndLogin';
+
+html,
+body,
+#app,
+#app-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background-color: #eee;
+  font-size: 16px;
+  padding: 1rem;
+}
+
+#app-wrapper {
+  display: grid;
+  grid-gap: 0.5rem;
+  grid-template-rows: 6rem auto 3rem;
+}
+
+#app-header,
+#app-footer {
+  text-align: center;
+}
+
+.image-container {
+  img {
+    max-width: 100%;
+  }
+}
