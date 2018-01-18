@@ -9,4 +9,4 @@ const GuestRoute = ({ isAuthenticated, component: Component, ...rest }) => (
   />
 );
 
-export default connect(({ user: { email } }) => ({ isAuthenticated: !!email }), null)(GuestRoute);
+export default connect(({ auth: { email } }) => ({ isAuthenticated: !!email }), null)(GuestRoute);

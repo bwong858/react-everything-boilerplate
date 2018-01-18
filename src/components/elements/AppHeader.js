@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { logout } from '../../store/actions/auth';
+import { logout } from '../../store/modules/auth';
 
 const AppHeader = ({ isAuthenticated, logout }) => (
   <header id="app-header">
@@ -14,6 +14,6 @@ const AppHeader = ({ isAuthenticated, logout }) => (
   </header>
 );
 
-export default connect(({ user: { email } }) => ({ isAuthenticated: !!email }), { logout })(
+export default connect(({ auth: { email } }) => ({ isAuthenticated: !!email }), { logout })(
   AppHeader
 );

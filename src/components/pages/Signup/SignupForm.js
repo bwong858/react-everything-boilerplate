@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
 import Form, { Validation } from '../../elements/Form';
-import { signup } from '../../../store/actions/user';
+import { signup } from '../../../store/modules/auth';
 import { ERROR, WARNING } from '../../constants';
 
 class SignupForm extends Form {

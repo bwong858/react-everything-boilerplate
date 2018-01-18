@@ -9,4 +9,4 @@ const UserRoute = ({ isAuthenticated, component: Component, ...rest }) => (
   />
 );
 
-export default connect(({ user: { email } }) => ({ isAuthenticated: !!email }), null)(UserRoute);
+export default connect(({ auth: { email } }) => ({ isAuthenticated: !!email }), null)(UserRoute);

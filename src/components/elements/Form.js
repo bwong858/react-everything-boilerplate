@@ -25,7 +25,6 @@ class Form extends Component {
       placeholder: 'Something amazing',
       validator: () => {
         const something = this.state.inputs.something.trim();
-
         if (!something) return new Validation(ERROR, 'Something must be provided');
         return null;
       }

@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 
 import Form, { Validation } from '../../elements/Form';
-import { userLoggedIn } from '../../../store/actions/auth';
-// import { login } from '../../../store/actions/auth';
+import { userLoggedIn } from '../../../store/modules/auth';
+// import { login } from '../../../store/modules/auth';
 import { ERROR } from '../../constants';
 
 class LoginForm extends Form {
