@@ -1,23 +1,28 @@
 import React, { Component } from 'react';
 
 import InlineMessage from './InlineMessage';
-import { ERROR } from '../constants';
 
 export const Validation = function(type, message) {
   this.type = type;
   this.message = message;
 };
 
-const isPasswordInput = inputName => inputName.toLowerCase().indexOf('password') !== -1;
+export const validationTypes = {
+  ERROR: 'error',
+  WARNING: 'warning'
+};
+
+export const requiredValidation = new Validation(validationTypes.ERROR, 'Must be provided');
+
+export const inputTypes = {
+  INPUT: 'input',
+  TEXTAREA: 'textarea',
+  SELECT: 'select'
+};
+
+const isPasswordInput = inputName => inputName.toLowerCase().includes('password');
 
 class Form extends Component {
-  // must provide
-  state = {
-    inputs: {
-      something: ''
-    }
-  };
-
   // must provide
   inputProps = {
     something: {
@@ -25,7 +30,9 @@ class Form extends Component {
       placeholder: 'Something amazing',
       validator: () => {
         const something = this.state.inputs.something.trim();
-        if (!something) return new Validation(ERROR, 'Something must be provided');
+        if (!something) return requiredValidation;
+        if (!something.toLowerCase().includes('cowbell'))
+          return new Validation(validationTypes.ERROR, 'Needs more cowbell');
         return null;
       }
     }
@@ -42,14 +49,17 @@ class Form extends Component {
     console.log('no errors :D');
   };
 
-  componentWillMount() {
-    this.setState({ inputValidations: {}, previousInputs: {} });
-  }
+  componentWillMount = () => {
+    const inputs = Object.keys(this.inputProps).reduce((inputsMap, input) => {
+      inputsMap[input] = '';
+      return inputsMap;
+    }, {});
+    this.setState({ inputs, inputValidations: {}, previousInputs: {} });
+  };
 
   validateOne = e => {
     const input = e.target.name;
     const { validator } = this.inputProps[input];
-
     if (validator) {
       const validation = validator();
       this.setState({ inputValidations: { ...this.state.inputValidations, [input]: validation } });
@@ -65,7 +75,7 @@ class Form extends Component {
       if (validator) {
         const validation = validator();
         inputValidations[input] = validation;
-        if (validation && validation.type === ERROR) areErrors = true;
+        if (validation && validation.type === validationTypes.ERROR) areErrors = true;
       }
     }
 
@@ -99,9 +109,8 @@ class Form extends Component {
     this.validateAll().then(this.options.verifyInputChange ? this.verifyInputChange : true);
 
   onChange = e => {
-    e.persist();
     const input = e.target.name;
-
+    e.persist();
     this.setState(
       {
         inputs: {
@@ -122,40 +131,62 @@ class Form extends Component {
       .catch(console.log);
   };
 
-  renderInputFields = () => (
-    <div className="input-fields">
-      {Object.keys(this.state.inputs).map(input => {
-        const { label, placeholder } = this.inputProps[input];
-        const validation = this.state.inputValidations[input];
-        const inputType = isPasswordInput(input) ? 'password' : 'text';
+  getValidationClassName = input => {
+    const validation = this.state.inputValidations[input];
+    return validation ? validation.type : '';
+  };
 
+  parseInput = input => {
+    const { INPUT, TEXTAREA, SELECT } = inputTypes;
+    const { placeholder, inputType } = this.inputProps[input];
+    const sharedProps = {
+      className: this.getValidationClassName(input),
+      name: input,
+      value: this.state.inputs[input],
+      placeholder: placeholder || '',
+      onChange: this.onChange,
+      onBlur: this.validateOne
+    };
+
+    switch (inputType) {
+      case TEXTAREA:
+        return <textarea {...sharedProps} />;
+      default:
         return (
-          <div key={`input-${input}`} className={`input-${input}`}>
-            <label htmlFor={input}>{label}</label>
-            <input
-              className={validation && validation.type}
-              type={inputType}
-              name={input}
-              value={this.state.inputs[input]}
-              placeholder={placeholder}
-              onChange={this.onChange}
-              onBlur={this.validateOne}
-            />
-            {validation && <InlineMessage type={validation.type} text={validation.message} />}
-          </div>
+          <input type={isPasswordInput(sharedProps.name) ? 'password' : 'text'} {...sharedProps} />
         );
-      })}
-    </div>
-  );
+    }
+  };
 
-  render() {
-    return (
-      <form onSubmit={this.onSubmit}>
-        {this.renderInputFields()}
-        <button type="submit">{this.options.buttonLabel}</button>
-      </form>
-    );
-  }
+  render = () => (
+    <form onSubmit={this.onSubmit}>
+      <div className="fields">
+        {Object.keys(this.state.inputs).map(input => {
+          const validation = this.state.inputValidations[input];
+          return (
+            <div key={`field-${input}`} className={`field ${input}`}>
+              <label htmlFor={input}>{this.inputProps[input].label || ''}</label>
+              {validation && (
+                <InlineMessage
+                  className="validation"
+                  type={validation.type}
+                  text={validation.message}
+                />
+              )}
+              {/*<div className="label-and-validation">
+                <label htmlFor={input}>{this.inputProps[input].label || ''}</label>
+                {validation && <InlineMessage type={validation.type} text={validation.message} />}
+          </div>*/}
+              <div className={`input ${this.getValidationClassName(input)}`}>
+                {this.parseInput(input)}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <button type="submit">{(this.options && this.options.buttonLabel) || 'Submit'}</button>
+    </form>
+  );
 }
 
 export default Form;

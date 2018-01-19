@@ -1,18 +1,12 @@
 import { connect } from 'react-redux';
 
-import Form, { Validation } from '../../elements/Form';
+import Form, { Validation, validationTypes } from '../../elements/Form';
 import { userLoggedIn } from '../../../store/modules/auth';
 // import { login } from '../../../store/modules/auth';
-import { ERROR } from '../../constants';
+
+const { ERROR } = validationTypes;
 
 class LoginForm extends Form {
-  state = {
-    inputs: {
-      email: '',
-      password: ''
-    }
-  };
-
   inputProps = {
     email: {
       label: 'Email',
